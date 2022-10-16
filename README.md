@@ -1,4 +1,4 @@
-# ThreeJs_Background_01
+# ThreeJs_Endless_Tiles
 Endless moving tiles made in threeJs
 
 https://fr4zt.github.io/ThreeJs_Background_01/
