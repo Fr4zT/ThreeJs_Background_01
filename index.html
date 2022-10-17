@@ -48,14 +48,11 @@
 
         const { EffectComposer, RenderPass, BlurPass, KernelSize } = POSTPROCESSING;
 
-        let cards = [];
-
-        let xCount = 3;
-        let zCount = 10;
-        let boxWidth = 5;
-        let boxDepht = 1;
-
-        function init() {
+        let tiles = [];
+        
+        function init()
+        {
+            tiles = [];
 
             const canvas = document.getElementById("threeCanvas");
 
@@ -88,17 +85,17 @@
             const directionalLight = new THREE.DirectionalLight(0xffffff, .5);
             scene.add(directionalLight);
 
-            const boxGeometry = new THREE.BoxGeometry(boxWidth - .07, 1, boxDepht - .07, 1, 1, 1);
+            const boxGeometry = new THREE.BoxGeometry(parameters.tileHeight - .07, 1, parameters.tileWidth - .07, 1, 1, 1);
 
-            for (let z = -zCount; z < zCount; z++) {
-                let xOffset = THREE.MathUtils.randFloat(0, 5);
-                let xSpeed = THREE.MathUtils.randFloat(0.005, 0.02);
-                for (let x = -xCount; x < xCount; x++) {
+            for (let z = -parameters.xCount; z < parameters.xCount; z++) {
+                let xOffset = THREE.MathUtils.randFloat(0, parameters.maxZOffset);
+                let xSpeed = THREE.MathUtils.randFloat(parameters.minSpeed, parameters.maxSpeed);
+                for (let x = -parameters.zCount; x < parameters.zCount; x++) {
 
                     const boxMaterial = new THREE.MeshStandardMaterial({ color: randomColor() });
                     let box = new THREE.Mesh(boxGeometry, boxMaterial);
-                    box.position.set(x * boxWidth + xOffset, 0, z * boxDepht);
-                    cards.push({ box: box, speed: xSpeed });
+                    box.position.set(x * parameters.tileHeight + xOffset, 0, z * parameters.tileWidth);
+                    tiles.push({ box: box, speed: xSpeed });
                     scene.add(box);
                 }
             }
@@ -106,6 +103,13 @@
             const gui = new GUI();
             const folderConfig = gui.addFolder('Configuration');
             folderConfig.add(parameters, "speedMultiplier", -10, 10, 0.1).name("Speed multiplier");
+            folderConfig.add(parameters, "xCount", 1, 20, 1).name("X axis count").onChange(init);
+            folderConfig.add(parameters, "zCount", 1, 20, 1).name("Z axis count").onChange(init);
+            folderConfig.add(parameters, "tileWidth", .5, 10, 0.1).name("Tile width").onChange(init);
+            folderConfig.add(parameters, "tileHeight", .5, 10, 0.1).name("Tile depht").onChange(init);
+            folderConfig.add(parameters, "maxZOffset", 0, 10, 0.1).name("Max Z offset").onChange(init);
+            folderConfig.add(parameters, "minSpeed", .001, 0.1, 0.001).name("Min speed").onChange(init);
+            folderConfig.add(parameters, "maxSpeed", .001, 0.1, 0.001).name("Max speed").onChange(init);
             folderConfig.addColor(parameters, "color_1").name("Color 1");
             folderConfig.addColor(parameters, "color_2").name("Color 2");
             folderConfig.add(parameters, "blurIntensity", 0, 10, 0.1).name("Blur intensity");
@@ -123,18 +127,26 @@
             speedMultiplier: 1,
             color_1: 0xff0000,
             color_2: 0x0000ff,
-            blurIntensity: 0
+            blurIntensity: 0,
+            xCount:5,
+            zCount:2,
+            tileWidth:1,
+            tileHeight:1,
+            maxZOffset:5,
+            minSpeed:0.005,
+            maxSpeed:0.02
         };
         function animate() {
-            for (let i = 0; i < cards.length; i++) {
-                const card = cards[i];
-                card.box.position.x += card.speed * parameters.speedMultiplier + toScroll;
-                if (card.box.position.x > boxWidth * xCount) {
-                    card.box.position.x = -boxWidth * xCount + (card.box.position.x - boxWidth * xCount);
-                    card.box.material.color.setHex(randomColor());
-                } else if (card.box.position.x < -boxWidth * xCount) {
-                    card.box.position.x = boxWidth * xCount + (card.box.position.x + boxWidth * xCount);
-                    card.box.material.color.setHex(randomColor());
+            if(tiles.length==0) return;
+            for (let i = 0; i < tiles.length; i++) {
+                const tile = tiles[i];
+                tile.box.position.x += tile.speed * parameters.speedMultiplier + toScroll;
+                if (tile.box.position.x > parameters.tileHeight * parameters.zCount) {
+                    tile.box.position.x = -parameters.tileHeight * parameters.zCount + (tile.box.position.x - parameters.tileHeight * parameters.zCount);
+                    tile.box.material.color.setHex(randomColor());
+                } else if (tile.box.position.x < -parameters.tileHeight * parameters.zCount) {
+                    tile.box.position.x = parameters.tileHeight * parameters.zCount + (tile.box.position.x + parameters.tileHeight * parameters.zCount);
+                    tile.box.material.color.setHex(randomColor());
                 }
             }
             if (toScroll != 0) {
@@ -163,7 +175,6 @@
 
         function randomColor() {
             let color = new THREE.Color(0xffffff).lerpColors(new THREE.Color(parameters.color_1), new THREE.Color(parameters.color_2), THREE.MathUtils.randFloat(0, 1)).getHexString();
-            console.log(parseInt("0x" + color, 16));
             return parseInt("0x" + color, 16);
         }
 
