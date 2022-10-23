@@ -1,4 +1,3 @@
-        import { GUI } from "https://cdn.jsdelivr.net/npm/three@0.145.0/examples/jsm/libs/lil-gui.module.min.js";
 
         let renderer, camera, scene;
         let composer, renderPass, blurPass;
@@ -70,21 +69,6 @@
                     scene.add(box);
                 }
             }
-
-            const gui = new GUI();
-            const folderConfig = gui.addFolder('Configuration');
-            folderConfig.add(parameters, "speedMultiplier", -10, 10, 0.1).name("Speed multiplier");
-            folderConfig.add(parameters, "xCount", 1, 20, 1).name("X axis count").onChange(init);
-            folderConfig.add(parameters, "zCount", 1, 20, 1).name("Z axis count").onChange(init);
-            folderConfig.add(parameters, "tileWidth", .5, 10, 0.1).name("Tile width").onChange(init);
-            folderConfig.add(parameters, "tileHeight", .5, 10, 0.1).name("Tile depht").onChange(init);
-            folderConfig.add(parameters, "maxZOffset", 0, 10, 0.1).name("Max Z offset").onChange(init);
-            folderConfig.add(parameters, "minSpeed", .001, 0.1, 0.001).name("Min speed").onChange(init);
-            folderConfig.add(parameters, "maxSpeed", .001, 0.1, 0.001).name("Max speed").onChange(init);
-            folderConfig.addColor(parameters, "color_1").name("Color 1");
-            folderConfig.addColor(parameters, "color_2").name("Color 2");
-            folderConfig.add(parameters, "blurIntensity", 0, 10, 0.1).name("Blur intensity");
-            folderConfig.open();
 
             onWindowResize();
         }
