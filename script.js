@@ -2,7 +2,6 @@
         import * as THREE from 'three';
 
         let renderer, camera, scene;
-        let composer, renderPass, blurPass;
 
         let tiles = [];
         
