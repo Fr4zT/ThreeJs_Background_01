@@ -21,10 +21,18 @@
 </head>
 
 <body>
-    <canvas id="threeCanvas"></canvas>
+    <canvas id="threeEndlessTilesCanvas"></canvas>
 
-    <script src="https://cdn.jsdelivr.net/npm/three@0.145.0/build/three.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/postprocessing@6.28.7/build/postprocessing.js"></script>
+    <script type="importmap">
+        {
+          "imports": {
+            "three" : "https://cdn.jsdelivr.net/npm/three@0.145.0/build/three.module.js",
+            "postprocessing" : "https://cdn.jsdelivr.net/npm/postprocessing@6.28.7/build/postprocessing.js"
+          }
+        }
+    </script>
+    
+
     <script type="module" src="script.js"></script>    
 
 </body>

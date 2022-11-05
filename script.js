@@ -1,22 +1,8 @@
 
+        import * as THREE from 'three';
+
         let renderer, camera, scene;
         let composer, renderPass, blurPass;
-
-        const {
-            Scene,
-            PerspectiveCamera,
-            CubeGeometry,
-            MeshPhongMaterial,
-            Mesh,
-            AmbientLight,
-            PointLight,
-            Color,
-            PointLightHelper,
-            WebGLRenderer
-        } = THREE;
-
-
-        const { EffectComposer, RenderPass, BlurPass, KernelSize } = POSTPROCESSING;
 
         let tiles = [];
         
@@ -39,15 +25,6 @@
             camera.rotation.set(degToRad(-45), 0, 0);
             camera.lookAt(0, 0, 0);
 
-            composer = new EffectComposer(renderer);
-
-            renderPass = new RenderPass(scene, camera);
-            composer.addPass(renderPass);
-
-            blurPass = new BlurPass({
-                kernelSize: KernelSize.HUGE
-            });
-            composer.addPass(blurPass);
 
             const light = new THREE.AmbientLight(0x404040);
             scene.add(light);
@@ -124,8 +101,7 @@
         }
 
         function render() {
-            blurPass.scale = parameters.blurIntensity;
-            composer.render();
+            renderer.render(scene, camera);
         }
 
         function randomColor() {
